@@ -6,18 +6,17 @@ import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.video.trimmer.interfaces.OnCropVideoListener
 import kotlinx.android.synthetic.main.activity_cropper.*
-import kotlinx.android.synthetic.main.activity_cropper.back
-import kotlinx.android.synthetic.main.activity_cropper.save
 import java.io.File
 
 class CropperActivity : AppCompatActivity(), OnCropVideoListener {
@@ -31,11 +30,18 @@ class CropperActivity : AppCompatActivity(), OnCropVideoListener {
         setupPermissions {
             val extraIntent = intent
             var path = ""
-            if (extraIntent != null) path = extraIntent.getStringExtra(MainActivity.EXTRA_VIDEO_PATH)
+            if (extraIntent != null) path = extraIntent.getStringExtra(MainActivity.EXTRA_VIDEO_PATH) ?: ""
             videoCropper.setVideoURI(Uri.parse(path))
                     .setOnCropVideoListener(this)
                     .setMinMaxRatios(0.3f, 3f)
-                    .setDestinationPath(Environment.getExternalStorageDirectory().toString() + File.separator + "Zoho Social" + File.separator + "Videos" + File.separator)
+
+            // Up to Android Q
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                videoCropper.setDestinationPath(Environment.getExternalStorageDirectory().toString() + File.separator + "Movies/Zoho Social" + File.separator)
+                return@setupPermissions
+            }
+
+            videoCropper.setDestinationPath(Environment.getExternalStorageDirectory().toString() + File.separator + "Zoho Social" + File.separator + "Videos" + File.separator)
         }
 
         back.setOnClickListener {
@@ -62,15 +68,15 @@ class CropperActivity : AppCompatActivity(), OnCropVideoListener {
             }
             val mediaMetadataRetriever = MediaMetadataRetriever()
             mediaMetadataRetriever.setDataSource(this, uri)
-            val duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong()
-            val width = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH).toLong()
-            val height = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT).toLong()
+            val duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()
+            val width = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toLong()
+            val height = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toLong()
             val values = ContentValues()
             values.put(MediaStore.Video.Media.DATA, uri.path)
             values.put(MediaStore.Video.VideoColumns.DURATION, duration)
             values.put(MediaStore.Video.VideoColumns.WIDTH, width)
             values.put(MediaStore.Video.VideoColumns.HEIGHT, height)
-            val id = ContentUris.parseId(contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values))
+            val id = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)?.let { ContentUris.parseId(it) }
             Log.e("VIDEO ID", id.toString())
         }
     }

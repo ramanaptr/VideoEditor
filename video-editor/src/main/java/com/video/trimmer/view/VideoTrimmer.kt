@@ -199,7 +199,7 @@ class VideoTrimmer @JvmOverloads constructor(context: Context, attrs: AttributeS
             for (i in 0..numTracks) {
                 val format = extractor.getTrackFormat(i)
                 val mime = format.getString(MediaFormat.KEY_MIME)
-                if (mime.startsWith("video/")) {
+                if (mime?.startsWith("video/") == true) {
                     if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
                         frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE)
                     }
@@ -213,6 +213,12 @@ class VideoTrimmer @JvmOverloads constructor(context: Context, attrs: AttributeS
         val duration = java.lang.Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))
         Log.e("FRAME RATE", frameRate.toString())
         Log.e("FRAME COUNT", (duration / 1000 * frameRate).toString())
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            VideoOptionsV2(context).trimVideo(TrimVideoUtils.stringForTime(mStartPosition), TrimVideoUtils.stringForTime(mEndPosition), file.path, outPutPath, outputFileUri, mOnTrimVideoListener)
+            return
+        }
+
         VideoOptions(context).trimVideo(TrimVideoUtils.stringForTime(mStartPosition), TrimVideoUtils.stringForTime(mEndPosition), file.path, outPutPath, outputFileUri, mOnTrimVideoListener)
     }
 

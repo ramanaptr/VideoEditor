@@ -20,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         trimmerButton.setOnClickListener { pickFromGallery(REQUEST_VIDEO_TRIMMER) }
-        cropperButton.setOnClickListener { pickFromGallery(REQUEST_VIDEO_CROPPER) }
+        cropperButton.setOnClickListener {
+            pickFromGallery(REQUEST_VIDEO_CROPPER)
+        }
     }
 
     private fun pickFromGallery(intentCode: Int) {

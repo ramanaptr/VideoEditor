@@ -3,15 +3,17 @@ package com.video.trimmer.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
+import com.arthenica.mobileffmpeg.FFmpeg.execute
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException
 import com.video.trimmer.interfaces.OnCompressVideoListener
 import com.video.trimmer.interfaces.OnCropVideoListener
 import com.video.trimmer.interfaces.OnTrimVideoListener
+
 
 class VideoOptions(private var ctx: Context) {
     companion object {
