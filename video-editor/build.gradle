@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -21,14 +21,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.jetbrains.anko:anko-sqlite:0.10.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation 'org.jetbrains.anko:anko-sqlite:0.10.5'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.writingminds:FFmpegAndroid:0.3.2'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
     // FFmpeg Lib
-    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
+//    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.4.LTS'
 }
 repositories {
     mavenCentral()
